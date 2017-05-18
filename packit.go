@@ -18,7 +18,7 @@ import (
 
 // Zip walks the file tree rooted at root and archives it into the output stream using zip
 // algorithm.
-func Zip(root string, out io.ReadWriter) {
+func Zip(root string, out io.Writer) {
 	zw := zip.NewWriter(out)
 	defer func() {
 		if err := zw.Close(); err != nil {
@@ -84,7 +84,7 @@ func Zip(root string, out io.ReadWriter) {
 }
 
 // Tar walks the file tree rooted at root and archives it all using Tar.
-func Tar(root string, out io.ReadWriter) {
+func Tar(root string, out io.Writer) {
 	tw := tar.NewWriter(out)
 	defer func() {
 		if err := tw.Close(); err != nil {
@@ -147,7 +147,7 @@ func Tar(root string, out io.ReadWriter) {
 }
 
 // Gzip compresses an input stream using gzip.
-func Gzip(in io.Reader, out io.ReadWriter) error {
+func Gzip(in io.Reader, out io.Writer) error {
 	gw := gzip.NewWriter(out)
 	defer func() {
 		if err := gw.Close(); err != nil {
@@ -162,7 +162,7 @@ func Gzip(in io.Reader, out io.ReadWriter) error {
 }
 
 // Xz compresses an input stream using xz.
-func Xz(in io.Reader, out io.ReadWriter) error {
+func Xz(in io.Reader, out io.Writer) error {
 	xw, err := xz.NewWriter(out)
 	if err != nil {
 		return err
@@ -181,7 +181,7 @@ func Xz(in io.Reader, out io.ReadWriter) error {
 }
 
 // Bzip2 compresses an input stream using bzip2.
-func Bzip2(in io.Reader, out io.ReadWriter) error {
+func Bzip2(in io.Reader, out io.Writer) error {
 	bw, err := bzip2.NewWriter(out, nil)
 	if err != nil {
 		return err
