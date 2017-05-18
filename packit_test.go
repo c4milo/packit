@@ -42,8 +42,10 @@ func TestTar(t *testing.T) {
 func TestGzip(t *testing.T) {
 	tar := new(bytes.Buffer)
 	targz := new(bytes.Buffer)
+
 	Tar("fixtures/myfiles", tar)
-	Gzip(tar, targz)
+	err := Gzip(tar, targz)
+	assert.Ok(t, err)
 }
 
 func TestBzip2(t *testing.T) {

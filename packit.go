@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/c4milo/packit/fastwalk"
+	"github.com/c4milo/fastwalk"
 	"github.com/dsnet/compress/bzip2"
 	"github.com/klauspost/compress/zip"
 	gzip "github.com/klauspost/pgzip"
