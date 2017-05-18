@@ -45,3 +45,11 @@ func TestGzip(t *testing.T) {
 	Tar("fixtures/myfiles", tar)
 	Gzip(tar, targz)
 }
+
+func TestBzip2(t *testing.T) {
+
+}
+
+func TestXz(t *testing.T) {
+
+}

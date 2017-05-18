@@ -9,9 +9,11 @@ import (
 	"sync"
 
 	"github.com/c4milo/packit/fastwalk"
+	"github.com/dsnet/compress/bzip2"
 	"github.com/klauspost/compress/zip"
 	gzip "github.com/klauspost/pgzip"
 	"github.com/pkg/errors"
+	"github.com/ulikunitz/xz"
 )
 
 // Zip walks the file tree rooted at root and archives it into the output stream using zip
@@ -68,7 +70,7 @@ func Zip(root string, out io.ReadWriter) {
 
 		defer func() {
 			if err := f.Close(); err != nil {
-				fmt.Printf("packit/zip: failed closing file: %s\n", path)
+				fmt.Printf("packit/zip: failed closing file %q: %v\n", path, err)
 			}
 		}()
 
@@ -96,7 +98,8 @@ func Tar(root string, out io.ReadWriter) {
 		m.Lock()
 		defer m.Unlock()
 
-		// Appending a final "/" is critical to let the decompressor know this is a directory.
+		// Appending a trailing path separator is critical to let the decompressor
+		// know this is a directory.
 		if mode.IsDir() && !strings.HasSuffix(path, sep) {
 			path += sep
 		}
@@ -148,11 +151,49 @@ func Gzip(in io.Reader, out io.ReadWriter) error {
 	gw := gzip.NewWriter(out)
 	defer func() {
 		if err := gw.Close(); err != nil {
-			fmt.Printf("packit/gzip: failed closing stream")
+			fmt.Printf("packit/gzip: failed closing stream: %v\n", err)
 		}
 	}()
 
 	if _, err := io.Copy(gw, in); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Xz compresses an input stream using xz.
+func Xz(in io.Reader, out io.ReadWriter) error {
+	xw, err := xz.NewWriter(out)
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		if err := xw.Close(); err != nil {
+			fmt.Printf("packit/xz: failed closing stream: %v\n", err)
+		}
+	}()
+
+	if _, err := io.Copy(xw, in); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Bzip2 compresses an input stream using bzip2.
+func Bzip2(in io.Reader, out io.ReadWriter) error {
+	bw, err := bzip2.NewWriter(out, nil)
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		if err := bw.Close(); err != nil {
+			fmt.Printf("packit/bzip2: failed closing stream: %v\n", err)
+		}
+	}()
+
+	if _, err := io.Copy(bw, in); err != nil {
 		return err
 	}
 	return nil
