@@ -11,5 +11,5 @@ require (
 	github.com/klauspost/compress v1.11.12
 	github.com/klauspost/pgzip v1.2.5
 	github.com/pkg/errors v0.9.1
-	github.com/ulikunitz/xz v0.5.10
+	github.com/ulikunitz/xz v0.5.14
 )
